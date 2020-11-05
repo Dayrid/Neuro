@@ -92,3 +92,6 @@ for c in first:
 for c in second:
     print(c)
 # ПРИВЕТ ОТ СЕРЕЖИ
+def print():
+    print(8)
+print()
