@@ -15,7 +15,7 @@ model = Sequential()
 
 model.add(LSTM(30, return_sequences=True, input_shape=(5, 4)))
 model.add(LSTM(15, activation='relu'))
-model.add(Dense(1, activation='linear'))
+model.add(Dense(5, activation='linear'))
 
 model.compile(loss='mae', optimizer=RMSprop())
 
