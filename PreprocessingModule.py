@@ -91,3 +91,4 @@ for c in first:
     print(c)
 for c in second:
     print(c)
+# ПРИВЕТ ОТ СЕРЕЖИ
