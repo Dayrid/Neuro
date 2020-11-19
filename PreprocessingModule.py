@@ -77,7 +77,7 @@ obj = Data('Urovni2_1_1_new.csv')
 # Предварительные данные
 multiple = obj.multiple_splitted
 single = obj.single_splitted
-print('-'*50)
+print('-'*49)
 first = obj.final_first
 second = obj.final_second
 print(len(multiple), len(single))
