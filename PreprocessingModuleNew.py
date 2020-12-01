@@ -1,11 +1,12 @@
 import csv
 import numpy as np
+import config as params
 class Data():
     def __init__(self, filename:str):
         self.multiple = self.get_multiple_data(filename)
         self.single = self.get_single_data(filename)
-        self.multiple_splitted = self.data_split(self.multiple)
-        self.single_splitted = self.data_split(self.single)
+        self.multiple_splitted = self.data_split(self.multiple, params.Fd)
+        self.single_splitted = self.data_split(self.single, params.Fh)
         self.multiple_splitted, self.single_splitted = self.clean(self.multiple_splitted, self.single_splitted)
         self.final_first = self.multiple_to_np(self.multiple_splitted)
         self.final_second = self.single_to_np(self.single_splitted)
@@ -37,14 +38,14 @@ class Data():
                     break
         return data[3:]
     # Разбивка на пятидневки
-    def data_split(self, data:list):
+    def data_split(self, data:list, n:int):
         counter = 0
         newdata = []
         temp_array = []
         for array in data:
             counter += 1
             temp_array.append(array)
-            if counter % 5 == 0:
+            if counter % n == 0:
                 newdata.append(temp_array)
                 temp_array = []
         return newdata
