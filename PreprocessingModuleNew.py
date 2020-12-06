@@ -54,16 +54,16 @@ class Data():
         return multiple_data[:-1], single_data[1:]
     # Функции превращения списков в массивы numpy
     def multiple_to_np(self, data:list):
-        arr = np.zeros((len(data),5,4))
+        arr = np.zeros((len(data),params.Fd,4))
         for i in range(len(data)):
-            for j in range(5):
+            for j in range(params.Fd):
                 for k in range(4):
                     arr[i][j][k] = data[i][j][k+1]
         return arr
     def single_to_np(self, data:list):
-        arr = np.zeros((len(data),5))
+        arr = np.zeros((len(data),params.Fh))
         for i in range(len(data)):
-            for j in range(5):
+            for j in range(params.Fh):
                 arr[i][j] = data[i][j][1]
         return arr
 obj = Data('Urovni2_1_1_new.csv')
