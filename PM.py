@@ -60,7 +60,7 @@ class Data():
         for i in index:
             del multiple_data[i-shift], single_data[i-shift]
             shift +=1
-        return multiple_data[:-1], single_data[5:]
+        return multiple_data[:-1], single_data[1:]
     # Функции превращения списков в массивы numpy
     def multiple_to_np(self, data:list):
         arr = np.zeros((len(data),int(self.params['fd']),4))
