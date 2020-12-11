@@ -26,10 +26,14 @@ class Data():
                 sdata.append([row[3], int(row[4])])
                 dates.append(row[3])
             if row[3] == self.params['end_date']:
+                i = data.index(row)
                 mdata.append([row[3], int(row[4]), int(row[6]), int(row[7]), int(row[8])])
-                sdata.append([row[3], int(row[4])])
                 if row[3] not in dates:
                     dates.append(row[3])
+                for j in range(i+1, i+1+int(self.params['fd'])):
+                    sdata.append([data[j][3], int(data[j][4])])
+                    if data[j][3] not in dates:
+                        dates.append(data[j][3])
                 break
         return mdata[3:], sdata[3:], dates[3:]
     # Разбивка на n-дневки
@@ -60,7 +64,7 @@ class Data():
         for i in index:
             del multiple_data[i-shift], single_data[i-shift]
             shift +=1
-        return multiple_data[:-1], single_data[1:]
+        return multiple_data[:-1], single_data[5:]
     # Функции превращения списков в массивы numpy
     def multiple_to_np(self, data:list):
         arr = np.zeros((len(data),int(self.params['fd']),4))
@@ -112,3 +116,4 @@ first = obj.final_first
 second = obj.final_second
 dates = obj.dates
 params = obj.params
+print(dates)
