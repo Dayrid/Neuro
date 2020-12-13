@@ -18,6 +18,12 @@ class Data():
         self.final_first = self.multiple_to_np(self.multiple_splitted)
         self.final_second = self.single_to_np(self.single_splitted)
         pass
+    # Булата
+    def csv_read(self, filename:str):
+        data = []
+        with open(filename, encoding='cp1251') as file:
+            file_reader = csv.reader(file, delimiter = ';')
+            return file_reader
     # Функция получения сырого массива значений
     def get_data(self, filename):
         mdata, sdata, data, dates = [], [], [], []
