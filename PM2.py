@@ -8,6 +8,7 @@ class Data():
         config.read("settings.ini")
         mas = dict(config.items('Settings'))
         return mas
+    # Конструктор для формировки массивов
     def __init__(self, filename:str):
         self.params = self.cfg()
         self.multiple, self.single, self.dates = self.get_data(filename)
@@ -17,6 +18,7 @@ class Data():
         self.final_first = self.multiple_to_np(self.multiple_splitted)
         self.final_second = self.single_to_np(self.single_splitted)
         pass
+    # Функция получения сырого массива значений
     def get_data(self, filename):
         mdata, sdata, data, dates = [], [], [], []
         data = self.xlsx_read(filename)
@@ -53,8 +55,9 @@ class Data():
                     temp_array = []
                     break
         return newdata[:-1]
-    # Выборка через один элемент для каждого массива
+    # Чистка массива от мусора и соотношение первого массива ко второму
     def clean(self, multiple_data:list, single_data:list):
+        # Чистка n-дневок от разных годов
         index = []
         ind = 0
         for days in multiple_data:
@@ -66,6 +69,7 @@ class Data():
         for i in index:
             del multiple_data[i-shift], single_data[i-shift]
             shift +=1
+        # Если значения fd fh в конфиге разные то первые значения будут с разницей в fd дней, а последнее значение single_data выведет fh дней после конца датафрейма
         if int(self.params['fd']) != int(self.params['fh']):
             temp = single_data[int(self.params['fd']):]
             for t in temp:
@@ -75,6 +79,9 @@ class Data():
             if temp[:ind][-1][0] == multiple_data[:-1][-1][-1][0]:
                 ind += 1
             return multiple_data[:-1], temp[:ind]
+        # Если fd fh одинаковые, то разница между первыми и последними будет fd дней.
+        # Т.е первое значение массива single_data начнется с разрывом в fd дней, последнее значение первого массива кончается на конечной дате, 
+        # а последнее значение второго массива начинается со следующего дня конечной даты.
         else:
             if int(self.params['fd'])>=7:
                 return multiple_data[:-2], single_data[int(self.params['fd']):-1]
@@ -94,6 +101,7 @@ class Data():
             for j in range(int(self.params['fh'])):
                 arr[i][j] = data[i][j][1]
         return arr
+    # Фукнция чтения xlsx формата
     def xlsx_read(self, filename):
         from openpyxl import load_workbook
         wb = load_workbook(filename)
@@ -111,6 +119,7 @@ class Data():
             except:
                 pass
         return data
+# Создание объекта класса Data
 obj = Data('Urovni2_1_1_new.xlsx')
 ''' multiple - это данные с 5 параметрами, дата, уровень воды, температура, скорость воздуха;
     single - это данные с 2 параметрами, дата, уровень воды;
