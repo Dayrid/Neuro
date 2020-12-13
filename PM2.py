@@ -31,7 +31,8 @@ class Data():
                 if row[3] not in dates:
                     dates.append(row[3])
                 for j in range(i+1, i+1+int(self.params['fd'])):
-                    sdata.append([data[j][3], int(data[j][4])])
+                    if [data[j][3], int(data[j][4])] not in sdata:
+                        sdata.append([data[j][3], int(data[j][4])])
                     if data[j][3] not in dates:
                         dates.append(data[j][3])
                 break
@@ -75,7 +76,10 @@ class Data():
                 ind += 1
             return multiple_data[:-1], temp[:ind]
         else:
-            return multiple_data[:-1], single_data[int(self.params['fd']):]
+            if int(self.params['fd'])>=7:
+                return multiple_data[:-2], single_data[int(self.params['fd']):-1]
+            else:
+                return multiple_data[:-1], single_data[int(self.params['fd']):]
     # Функции превращения списков в массивы numpy
     def multiple_to_np(self, data:list):
         arr = np.zeros((len(data),int(self.params['fd']),4))
