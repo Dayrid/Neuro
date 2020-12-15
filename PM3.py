@@ -3,6 +3,7 @@ import numpy as np
 import configparser
 import pandas as pd
 import math
+import sys
 from math import isnan
 class Data():
     # Функция чтения конфига (писал Булат)
@@ -13,6 +14,7 @@ class Data():
         return mas
     # Конструктор для формировки массивов
     def __init__(self, filename:str):
+        self.error = False
         self.params = self.cfg()
         self.multiple, self.single, self.dates = self.get_data(filename)
         self.multiple_splitted = self.data_split(self.multiple, int(self.params['fd']))
@@ -25,6 +27,14 @@ class Data():
     def get_data(self, filename):
         mdata, sdata, data, dates = [], [], [], []
         data = self.xlsx_read(filename)
+        print('Проверка корректности данных...')
+        check = [i for i in data if i[3] == self.params['end_date']]
+        if check == []:
+            print(f"Указанной даты {self.params['end_date']} не существует в таблице.")
+            self.error = True
+            exit(0)
+        else:
+            print('Все в порядке, происходит обработка данных...')
         for row in data:
             if not isnan(row[6]) and not isnan(row[7]) and not isnan(row[8]):
                 mdata.append([row[3], int(row[4]), int(row[6]), int(row[7]), int(row[8])])
@@ -86,7 +96,7 @@ class Data():
         # Т.е первое значение массива single_data начнется с разрывом в fd дней, последнее значение первого массива кончается на конечной дате, 
         # а последнее значение второго массива начинается со следующего дня конечной даты.
         else:
-            if int(self.params['fd'])>=7:
+            if int(self.params['fd'])>=6:
                 return multiple_data[:-2], single_data[int(self.params['fd']):-1]
             else:
                 return multiple_data[:-1], single_data[int(self.params['fd']):]
@@ -126,11 +136,12 @@ obj = Data('Urovni2_1_1_new.xlsx')
 #предварительные данные
 multiple = obj.multiple_splitted
 single = obj.single_splitted
-print(len(multiple), len(single))
+print(f'Длины массивов: {len(multiple)}, {len(single)}')
 #данные без дат
-print('-'*100)
+print()
 for c in multiple:
     print(c)
+print()
 for c in single:
     print(c)
 first = obj.final_first
