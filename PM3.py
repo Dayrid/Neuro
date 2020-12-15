@@ -41,33 +41,22 @@ class Data():
                 sdata.append([row[3], int(row[4])])
                 dates.append(row[3])
             if row[3] == self.params['end_date']:
-                i = data.index(row)
+                i = data.index(row)+1
                 mdata.append([row[3], int(row[4]), int(row[6]), int(row[7]), int(row[8])])
-                if row[3] not in dates:
-                    dates.append(row[3])
-                for j in range(i+1, i+1+int(self.params['fd'])):
-                    if [data[j][3], int(data[j][4])] not in sdata:
-                        sdata.append([data[j][3], int(data[j][4])])
-                    if data[j][3] not in dates:
-                        dates.append(data[j][3])
+                for r in data[i:i+int(self.params['fh'])]:
+                    sdata.append([r[3], int(r[4])])
+                    if r[3] not in dates:
+                        dates.append(r[3])
                 break
         return mdata, sdata, dates
     # Разбивка на n-дневки
     def data_split(self, data:list, n:int):
-        counter = 0
+        if len(data)%n != 0:
+            del data[:len(data)%n-1]
         newdata = []
-        temp_array = []
-        for i in range(len(data)):
-            for e in data[i:]:
-                if len(data)-i == n:
-                    break
-                temp_array.append(e)
-                counter +=1
-                if counter % n == 0:
-                    newdata.append(temp_array)
-                    temp_array = []
-                    break
-        return newdata[:-1]
+        for i in range(len(data)-n+1):
+            newdata.append(data[i:i+n])
+        return newdata
     # Чистка массива от мусора и соотношение первого массива ко второму
     def clean(self, multiple_data:list, single_data:list):
         # Чистка n-дневок от разных годов
@@ -82,24 +71,11 @@ class Data():
         for i in index:
             del multiple_data[i-shift], single_data[i-shift]
             shift +=1
-        # Если значения fd fh в конфиге разные то первые значения будут с разницей в fd дней, а последнее значение single_data выведет fh дней после конца датафрейма
-        if int(self.params['fd']) != int(self.params['fh']):
-            temp = single_data[int(self.params['fd']):]
-            for t in temp:
-                if t[0][0] == multiple_data[:-1][-1][-1][0]:
-                    ind = temp.index(t)+2
-                    break
-            if temp[:ind][-1][0] == multiple_data[:-1][-1][-1][0]:
-                ind += 1
-            return multiple_data[:-1], temp[:ind]
-        # Если fd fh одинаковые, то разница между первыми и последними будет fd дней.
-        # Т.е первое значение массива single_data начнется с разрывом в fd дней, последнее значение первого массива кончается на конечной дате, 
-        # а последнее значение второго массива начинается со следующего дня конечной даты.
-        else:
-            if int(self.params['fd'])>=6:
-                return multiple_data[:-2], single_data[int(self.params['fd']):-1]
-            else:
-                return multiple_data[:-1], single_data[int(self.params['fd']):]
+        if len(multiple_data)>len(single_data[int(self.params['fd']):]):
+            multiple_data = multiple_data[len(multiple_data)-len(single_data[int(self.params['fd']):]):]
+        elif len(multiple_data)<len(single_data[int(self.params['fd']):]):
+            single_data = single_data[len(single_data[int(self.params['fd']):])-len(multiple_data):]
+        return multiple_data[:-1], single_data[int(self.params['fd'])+1:]
     # Функции превращения списков в массивы numpy
     def multiple_to_np(self, data:list):
         arr = np.zeros((len(data),int(self.params['fd']),4))
