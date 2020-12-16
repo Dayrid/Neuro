@@ -28,7 +28,7 @@ class Data():
         mdata, sdata, data, dates = [], [], [], []
         data = self.xlsx_read(filename)
         print('Проверка корректности данных...')
-        check = [i for i in data if i[3] == self.params['end_date']]
+        check = [i for i in data if i[3] == self.params['end_date'] and not isnan(i[6]) and not isnan(i[7]) and not isnan(i[8])]
         if check == []:
             print(f"Указанной даты {self.params['end_date']} не существует в таблице.")
             self.error = True
