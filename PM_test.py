@@ -52,8 +52,6 @@ class Data():
         return mdata, sdata, dates
     # Разбивка на n-дневки
     def data_split(self, data:list, n:int):
-        if len(data)%n != 0:
-            del data[:len(data)%n-1]
         newdata = []
         for i in range(len(data)-n+1):
             newdata.append(data[i:i+n])
