@@ -18,6 +18,7 @@ class Data():
         self.params = self.cfg()
         self.multiple, self.single, self.dates = self.get_data(filename)
         self.md, self.sg, self.dates2 = self.get_data2(filename)
+        self.md_numpy, self.sd_numpy = self.to_np(self.md, self.sg)
         self.multiple_splitted = self.data_split(self.multiple, int(self.params['fd']))
         self.single_splitted = self.data_split(self.single, int(self.params['fh']))
         self.multiple_splitted, self.single_splitted = self.clean(self.multiple_splitted, self.single_splitted)
@@ -113,6 +114,13 @@ class Data():
                         dates.append(r[3])
                 break
         return mdata, sdata, dates
+    def to_np(self, md, sd):
+        temp = []
+        for i in range(len(md)):
+            del md[i][0], sd[i][0]
+            if len(sd[i]) == 1:
+                temp.append(sd[i][0])
+        return md, temp
     # Фукнция чтения xlsx формата
     def xlsx_read(self, filename):
         data = []
@@ -149,5 +157,5 @@ dates = obj.dates
 params = obj.params
 # Неформатированные данные с NaN
 md, sd, dates2 = obj.md, obj.sg, obj.dates2
-for c in md:
-    print(c)
+# Неформатированные данные с NaN без дат
+md_numpy, sd_numpy = obj.md_numpy, obj.sd_numpy
