@@ -17,6 +17,7 @@ class Data():
         self.params = self.cfg()
         self.multiple, self.single, self.dates = self.get_data(filename)
         self.md, self.sg, self.dates2 = self.get_data2(filename)
+        self.md = self.data_append(self.md)
         self.md_numpy, self.sd_numpy = self.to_np(self.md, self.sg)
         self.multiple = self.data_append(self.multiple)
         self.multiple_splitted = self.data_split(self.multiple, int(self.params['fd']))
@@ -185,3 +186,5 @@ params = obj.params
 md, sd, dates2 = obj.md, obj.sg, obj.dates2
 # Неформатированные данные с NaN без дат
 md_numpy, sd_numpy = obj.md_numpy, obj.sd_numpy
+for c in md_numpy:
+    print(c)
