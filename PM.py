@@ -89,7 +89,14 @@ class Data():
         single = df_single['Уровень воды'].values.tolist()
         # Восстановление данных
         multiple = np.array(multiple[:index+1])
-        multiple_restored = iter(multiple).tolist()
+        if self.params['restore_data'] == 'iter':
+            multiple_restored = iter(multiple).tolist()
+        elif self.params['restore_data'] == 'knn':
+            multiple_restored = knn(multiple, 31).tolist()
+        elif self.params['restore_data'] == 'mean':
+            multiple_restored = mean(multiple).tolist()
+        else:
+            multiple_restored = idle(multiple).tolist()
         multiple_restored_dates = copy.deepcopy(multiple_restored)
         single_dates = [[i] for i in single]
         day_in_year = [self.data_check(i) for i in dates]
